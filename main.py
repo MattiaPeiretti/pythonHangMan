@@ -18,9 +18,6 @@ pygame.font.init()
 myfont = pygame.font.SysFont('Comic Sans MS', 24)
 
 
-
-
-
 nouns = [
     'people',
     'history',
@@ -232,19 +229,15 @@ def draw_base(screen, FOREGROUND_COLOR):
 
 
 def main():
-    
+    pygame.display.set_caption('Hang man') 
     screen=pygame.display.set_mode((WINDOW_WIDTH,WINDOW_HEIGHT))
     screen.fill(BACKGROUND_COLOR)
 
     p = stick_man(screen, FOREGROUND_COLOR)
     draw_base(screen, FOREGROUND_COLOR)
     key_pressed = ""
-  
-    
-    
-    
 
-    
+  
     running = True
     while running:
         screen.fill(BACKGROUND_COLOR)
@@ -252,23 +245,22 @@ def main():
     
         p.draw_head()
         p.draw_body()
-        
 
-        insert_letter_text = myfont.render('insert letter: ' + key_pressed, False, (255, 255, 255))
-        screen.blit(insert_letter_text,(20,350))
-        
+        #word = generate_word()
+
+        #letter = ask_letter(screen, 80, 350)     
+
         for events in pygame.event.get():
             if events.type == pygame.QUIT:
-                running = False
-            if events.type == pygame.KEYDOWN:
-               key_pressed = detect_pressed_key(screen, events.key)
+                 sys.exit()
         pygame.display.flip()
+
+        
 
 def detect_pressed_key(screen, key_pressed_ascii):
     key_pressed = ""
     if key_pressed_ascii >= MIN_ASCII_VALUE and key_pressed_ascii <= MAX_ASCII_VALUE: 
         key_pressed = chr(key_pressed_ascii)
-
         if key_pressed == "":
             pass
         else:
@@ -276,24 +268,29 @@ def detect_pressed_key(screen, key_pressed_ascii):
     else:
         
         return key_pressed   
-   
+
+def ask_letter(screen, cord_x = 50, cord_y = 50):
+    text_insert_letter = myfont.render('Please insert a letter:', False, FOREGROUND_COLOR)
+    running = True
+    while running:
         
-    
-    
-        
-        
-
-
-
-
-
+        for events in pygame.event.get():
+            if events.type == pygame.QUIT:
+                 sys.exit()
+            if events.type == pygame.KEYDOWN:
+                letter = detect_pressed_key(screen, events.key)
+                text_insert_letter = myfont.render('Please insert a letter: ' + letter, False, FOREGROUND_COLOR)
+                running = False
+    screen.blit(text_insert_letter,(cord_x,cord_y))
+    return letter
+               
 
 def generate_word():
     word = random.choice(nouns)
     length = len(word)
     first_letter = word[0]
     last_letter = word[length-1]
-    return word, length, first_letter, last_letter
+    return word
     
 
 
