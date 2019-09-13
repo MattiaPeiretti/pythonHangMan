@@ -240,19 +240,28 @@ def main():
   
     running = True
     while running:
+        for events in pygame.event.get():
+            if events.type == pygame.QUIT:
+                 sys.exit()
         screen.fill(BACKGROUND_COLOR)
         draw_base(screen, FOREGROUND_COLOR)
     
         p.draw_head()
         p.draw_body()
 
-        #word = generate_word()
+        word = generate_word()
+        print(word)
+        processed_word = word[0] + '_'*(len(word)-2) + word[len(word)-1]
+        print(processed_word)
 
-        #letter = ask_letter(screen, 80, 350)     
+        letter = ask_letter(screen, 80, 350)  
 
-        for events in pygame.event.get():
-            if events.type == pygame.QUIT:
-                 sys.exit()
+        if letter in word:
+            print('good')
+            print(word.find(letter))
+            
+
+        
         pygame.display.flip()
 
         
@@ -287,9 +296,6 @@ def ask_letter(screen, cord_x = 50, cord_y = 50):
 
 def generate_word():
     word = random.choice(nouns)
-    length = len(word)
-    first_letter = word[0]
-    last_letter = word[length-1]
     return word
     
 
