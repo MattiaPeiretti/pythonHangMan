@@ -2,6 +2,7 @@ import sys
 import random
 import pygame
 from tkinter import messagebox
+from time import sleep
 
 
 #COSTANTS
@@ -16,6 +17,7 @@ FOREGROUND_COLOR=(255,255,255)
 
 pygame.font.init()               
 myfont = pygame.font.SysFont('Comic Sans MS', 24)
+myfont_big = pygame.font.SysFont('Comic Sans', 54)
 
 
 nouns = [
@@ -234,37 +236,96 @@ def main():
     screen.fill(BACKGROUND_COLOR)
 
     p = stick_man(screen, FOREGROUND_COLOR)
-    draw_base(screen, FOREGROUND_COLOR)
-    key_pressed = ""
 
-  
+    errors = 0
+    line1 = ''
+    line2 = 'Please, select a letter: '
+    line3 = 'Number of errors: '
+    word = ''
+    processed_word = ''
+    
+
     running = True
     while running:
+        
         for events in pygame.event.get():
             if events.type == pygame.QUIT:
                  sys.exit()
         screen.fill(BACKGROUND_COLOR)
         draw_base(screen, FOREGROUND_COLOR)
-    
-        p.draw_head()
-        p.draw_body()
-
-        word = generate_word()
-        print(word)
-        processed_word = word[0] + '_'*(len(word)-2) + word[len(word)-1]
-        print(processed_word)
-
-        letter = ask_letter(screen, 80, 350)  
-
-        if letter in word:
-            print('good')
-            print(word.find(letter))
-            
-
         
+        if errors > 0:
+            p.draw_head()
+
+        if errors > 1:
+            p.draw_body()
+
+        if errors > 2:
+            p.draw_left_arm()
+
+        if errors > 3:
+            p.draw_right_arm()
+
+        if errors > 4:
+            p.draw_left_leg()
+
+        if errors > 5:
+            p.draw_right_leg()
+
+        if processed_word.find('-') == -1:
+            word = ''
+
+        if word == '':
+            word = generate_word()
+            processed_word = word[0] + '-'*(len(word)-2) + word[len(word)-1]
+       
+        line1 = processed_word
+
+        display_message(screen, line1, FOREGROUND_COLOR, (50, 320))
+        display_message(screen, line2, FOREGROUND_COLOR, (50, 350))
+        display_message(screen, line3 + str(errors), FOREGROUND_COLOR, (50, 380))
+
+        line2 = 'Please, select a letter: '
         pygame.display.flip()
 
         
+        letter = ask_letter(screen, 80, 350)  
+        line2 = 'You selected the letter: ' + letter
+        print(word)
+        word = list(word)
+
+        
+        
+        if letter in word:
+            letter_pos = [i for i, a in enumerate(word) if a == letter]
+            processed_word = list(processed_word)
+            for key in letter_pos:
+                processed_word[key] = letter
+                word[key] = '1'
+            processed_word = ''.join(processed_word)
+            line1 = processed_word
+            
+        else:
+            errors += 1
+                
+
+        
+
+        
+def display_message(screen, message, color, pos = (50, 30)):
+    
+    text = myfont.render(message, False, color)
+    screen.blit(text, pos)
+    
+    
+def show_message_box(screen, message, color):
+    screen.fill((0,0,0))
+    text = myfont_big.render(message, False, color)
+    text_rect = text.get_rect(center=(WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
+    
+    screen.blit(text, text_rect)
+    pygame.display.flip()
+    sleep(3)
 
 def detect_pressed_key(screen, key_pressed_ascii):
     key_pressed = ""
@@ -279,7 +340,6 @@ def detect_pressed_key(screen, key_pressed_ascii):
         return key_pressed   
 
 def ask_letter(screen, cord_x = 50, cord_y = 50):
-    text_insert_letter = myfont.render('Please insert a letter:', False, FOREGROUND_COLOR)
     running = True
     while running:
         
@@ -288,9 +348,9 @@ def ask_letter(screen, cord_x = 50, cord_y = 50):
                  sys.exit()
             if events.type == pygame.KEYDOWN:
                 letter = detect_pressed_key(screen, events.key)
-                text_insert_letter = myfont.render('Please insert a letter: ' + letter, False, FOREGROUND_COLOR)
+                message = message = letter
                 running = False
-    screen.blit(text_insert_letter,(cord_x,cord_y))
+    
     return letter
                
 
