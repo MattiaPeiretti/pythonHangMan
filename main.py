@@ -2,19 +2,19 @@ import sys
 import random
 import pygame
 from tkinter import messagebox
-from time import sleep
+import time
 
-#COSTANTS
-MIN_ASCII_VALUE = 97 
+# COSTANTS
+MIN_ASCII_VALUE = 97
 MAX_ASCII_VALUE = 122
 
 WINDOW_WIDTH = 1000
 WINDOW_HEIGHT = 500
 
-BACKGROUND_COLOR=(0,0,0)
-FOREGROUND_COLOR=(255,255,255)
+BACKGROUND_COLOR = (0, 0, 0)
+FOREGROUND_COLOR = (255, 255, 255)
 
-pygame.font.init()               
+pygame.font.init()
 myfont = pygame.font.SysFont('Comic Sans MS', 24)
 myfont_big = pygame.font.SysFont('Comic Sans', 54)
 
@@ -196,6 +196,15 @@ nouns = [
     'insurance',
     'mood']
 
+compliments = [
+    'Good one!!',
+    'Good!',
+    'Well Done!',
+    'Nice!',
+    'Right!'
+]
+
+
 class stick_man:
     def __init__(self, screen, color):
         self.screen = screen
@@ -203,31 +212,41 @@ class stick_man:
 
     def draw_head(self):
         pygame.draw.circle(self.screen, self.color, (200, 60), 20, 1)
-    
+
     def draw_body(self):
-        pygame.draw.line(self.screen, self.color ,(200, 80), (200, 160))
-        
+        pygame.draw.line(self.screen, self.color, (200, 80), (200, 160))
+
     def draw_left_arm(self):
-        pygame.draw.line(self.screen, self.color ,(200, 90), (170, 120))
+        pygame.draw.line(self.screen, self.color, (200, 90), (170, 120))
 
     def draw_right_arm(self):
-        pygame.draw.line(self.screen, self.color ,(200, 90), (230, 120))
+        pygame.draw.line(self.screen, self.color, (200, 90), (230, 120))
 
     def draw_left_leg(self):
-        pygame.draw.line(self.screen, self.color ,(200, 160), (230, 200))
+        pygame.draw.line(self.screen, self.color, (200, 160), (230, 200))
 
     def draw_right_leg(self):
-        pygame.draw.line(self.screen, self.color ,(200, 160), (170, 200))
+        pygame.draw.line(self.screen, self.color, (200, 160), (170, 200))
+
+
+def sleep(sec):
+    for _ in range(0, sec*1000):
+        for events in pygame.event.get():
+            if events.type == pygame.QUIT:
+                sys.exit()
+        time.sleep(0.001)
+
 
 def draw_base(screen, FOREGROUND_COLOR):
-    pygame.draw.line(screen, FOREGROUND_COLOR,(20,20),(20,300))
-    pygame.draw.line(screen, FOREGROUND_COLOR,(20,300),(80,300))
-    pygame.draw.line(screen, FOREGROUND_COLOR,(20,20),(200,20))
-    pygame.draw.line(screen, FOREGROUND_COLOR,(200,20),(200,40))
+    pygame.draw.line(screen, FOREGROUND_COLOR, (20, 20), (20, 300))
+    pygame.draw.line(screen, FOREGROUND_COLOR, (20, 300), (80, 300))
+    pygame.draw.line(screen, FOREGROUND_COLOR, (20, 20), (200, 20))
+    pygame.draw.line(screen, FOREGROUND_COLOR, (200, 20), (200, 40))
+
 
 def main():
-    pygame.display.set_caption('Hang man') 
-    screen=pygame.display.set_mode((WINDOW_WIDTH,WINDOW_HEIGHT))
+    pygame.display.set_caption('Hang man')
+    screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
     screen.fill(BACKGROUND_COLOR)
 
     p = stick_man(screen, FOREGROUND_COLOR)
@@ -237,17 +256,16 @@ def main():
     line2 = 'Please, select a letter: '
     line3 = 'Number of errors: '
     word = ''
-    processed_word = ''
-    
+    processed_word = '-'
+
     running = True
     while running:
-        
+
         for events in pygame.event.get():
             if events.type == pygame.QUIT:
-                 sys.exit()
+                sys.exit()
         screen.fill(BACKGROUND_COLOR)
-        draw_base(screen, FOREGROUND_COLOR)
-        
+
         if errors > 0:
             p.draw_head()
 
@@ -266,16 +284,20 @@ def main():
         if errors > 5:
             p.draw_right_leg()
             pygame.display.flip()
+            sleep(2)
             show_message_box(screen, 'GAME OVER!!')
+            errors = 0
 
         else:
             if processed_word.find('-') == -1:
+                show_message_box(screen, random.choice(compliments))
                 word = ''
+                errors = 0
 
             if word == '':
                 word = generate_word()
                 processed_word = word[0] + '-'*(len(word)-2) + word[len(word)-1]
-        
+
             line1 = processed_word
 
             display_message(screen, line1, FOREGROUND_COLOR, (50, 320))
@@ -283,10 +305,10 @@ def main():
             display_message(screen, line3 + str(errors), FOREGROUND_COLOR, (50, 380))
 
             line2 = 'Please, select a letter: '
+            draw_base(screen, FOREGROUND_COLOR)
             pygame.display.flip()
 
-            
-            letter = ask_letter(screen, 80, 350)  
+            letter = ask_letter(screen, 80, 350)
             line2 = 'You selected the letter: ' + letter
             print(word)
             word = list(word)
@@ -301,53 +323,57 @@ def main():
                     word[key] = '1'
                 processed_word = ''.join(processed_word)
                 line1 = processed_word
-                
+
             else:
                 errors += 1
-                
-def display_message(screen, message, color, pos = (50, 30)):
+
+
+def display_message(screen, message, color, pos=(50, 30)):
     text = myfont.render(message, False, color)
     screen.blit(text, pos)
-     
+
+
 def show_message_box(screen, message):
-    sleep(2)
-    screen.fill((0,0,0))
+    pygame.event.pump()
+    screen.fill((0, 0, 0))
     text = myfont_big.render(message, False, (255, 255, 255))
     text_rect = text.get_rect(center=(WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
     screen.blit(text, text_rect)
     pygame.display.flip()
+
     sleep(3)
+    screen.fill((0, 0, 0))
+    pygame.display.flip()
+
 
 def detect_pressed_key(screen, key_pressed_ascii):
     key_pressed = ""
-    if key_pressed_ascii >= MIN_ASCII_VALUE and key_pressed_ascii <= MAX_ASCII_VALUE: 
+    if key_pressed_ascii >= MIN_ASCII_VALUE and key_pressed_ascii <= MAX_ASCII_VALUE:
         key_pressed = chr(key_pressed_ascii)
         if key_pressed == "":
             pass
         else:
             return key_pressed
     else:
-        
-        return key_pressed   
 
-def ask_letter(screen, cord_x = 50, cord_y = 50):
+        return key_pressed
+
+
+def ask_letter(screen, cord_x=50, cord_y=50):
     running = True
     while running:
         for events in pygame.event.get():
             if events.type == pygame.QUIT:
-                 sys.exit()
+                sys.exit()
             if events.type == pygame.KEYDOWN:
                 letter = detect_pressed_key(screen, events.key)
                 running = False
     return letter
-               
+
+
 def generate_word():
     word = random.choice(nouns)
     return word
-    
-
-
 
 
 main()
-
