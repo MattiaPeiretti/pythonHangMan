@@ -184,3 +184,11 @@ compliments = [
     'Nice!',
     'Right!'
 ]
+
+def main():
+    print(nouns)
+    print(compliments)
+
+
+if __name__ == '__main__':
+    main()
