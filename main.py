@@ -70,7 +70,7 @@ def generate_word():
     return word
 
 def generate_censured_word(word):
-    processed_word = word[0] + '-'*(len(word)-2) + word[len(word)-1]
+    processed_word = word[0] + '-'*(len(word)-2) + word[len(word)-1] #putting - instead of the letters in the center
     return processed_word
 
 def display_message(screen, message, color, pos=(50, 30), font = myfont):
@@ -79,14 +79,14 @@ def display_message(screen, message, color, pos=(50, 30), font = myfont):
 
 def show_message_box(screen, message, showtime): #showing a messagebox, like a notification for the user
     screen.fill((0, 0, 0)) #filling screen black
-    text = myfont_big.render(message, False, (255, 255, 255))
-    text_rect = text.get_rect(center=(WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
-    screen.blit(text, text_rect)
-    pygame.display.flip()
+    text = myfont_big.render(message, False, (255, 255, 255)) #rendering text
+    text_rect = text.get_rect(center=(WINDOW_WIDTH/2, WINDOW_HEIGHT/2)) #centering text in the center of the window
+    screen.blit(text, text_rect) 
+    pygame.display.flip() #updating screen
 
     sleep(showtime)
-    screen.fill((0, 0, 0))
-    pygame.display.flip()
+    screen.fill((0, 0, 0)) 
+    pygame.display.flip() #updating screen
 
 def get_char_from_ascii(screen, key_pressed_ascii): #converting ascii code to char var
     if key_pressed_ascii >= MIN_ASCII_VALUE and key_pressed_ascii <= MAX_ASCII_VALUE: #checking if it is a letter
