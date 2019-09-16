@@ -3,6 +3,7 @@ import random
 import pygame
 from tkinter import messagebox
 import time
+from nouns import nouns, compliments
 
 # COSTANTS
 MIN_ASCII_VALUE = 97
@@ -14,196 +15,11 @@ WINDOW_HEIGHT = 500
 BACKGROUND_COLOR = (0, 0, 0)
 FOREGROUND_COLOR = (255, 255, 255)
 
+DELAY_COSTANT = 500
+
 pygame.font.init()
 myfont = pygame.font.SysFont('Comic Sans MS', 24)
 myfont_big = pygame.font.SysFont('Comic Sans', 54)
-
-
-nouns = [
-    'people',
-    'history',
-    'way',
-    'art',
-    'world',
-    'information',
-    'map',
-    'two',
-    'family',
-    'government',
-    'health',
-    'system',
-    'computer',
-    'meat',
-    'year',
-    'thanks',
-    'music',
-    'person',
-    'reading',
-    'method',
-    'data',
-    'food',
-    'understanding',
-    'theory',
-    'law',
-    'bird',
-    'literature',
-    'problem',
-    'software',
-    'control',
-    'knowledge',
-    'power',
-    'ability',
-    'economics',
-    'love',
-    'internet',
-    'television',
-    'science',
-    'library',
-    'nature',
-    'fact',
-    'product',
-    'idea',
-    'temperature',
-    'investment',
-    'area',
-    'society',
-    'activity',
-    'story',
-    'industry',
-    'media',
-    'thing',
-    'oven',
-    'community',
-    'definition',
-    'safety',
-    'quality',
-    'development',
-    'language',
-    'management',
-    'player',
-    'variety',
-    'video',
-    'week',
-    'security',
-    'country',
-    'exam',
-    'movie',
-    'organization',
-    'equipment',
-    'physics',
-    'analysis',
-    'policy',
-    'series',
-    'thought',
-    'basis',
-    'boyfriend',
-    'direction',
-    'strategy',
-    'technology',
-    'army',
-    'camera',
-    'freedom',
-    'paper',
-    'environment',
-    'child',
-    'instance',
-    'month',
-    'truth',
-    'marketing',
-    'university',
-    'writing',
-    'article',
-    'department',
-    'difference',
-    'goal',
-    'news',
-    'audience',
-    'fishing',
-    'growth',
-    'income',
-    'marriage',
-    'user',
-    'combination',
-    'failure',
-    'meaning',
-    'medicine',
-    'philosophy',
-    'teacher',
-    'communication',
-    'night',
-    'chemistry',
-    'disease',
-    'disk',
-    'energy',
-    'nation',
-    'road',
-    'role',
-    'soup',
-    'advertising',
-    'location',
-    'success',
-    'addition',
-    'apartment',
-    'education',
-    'math',
-    'moment',
-    'painting',
-    'politics',
-    'attention',
-    'decision',
-    'event',
-    'property',
-    'shopping',
-    'student',
-    'wood',
-    'competition',
-    'distribution',
-    'entertainment',
-    'office',
-    'population',
-    'president',
-    'unit',
-    'category',
-    'cigarette',
-    'context',
-    'introduction',
-    'opportunity',
-    'performance',
-    'driver',
-    'flight',
-    'length',
-    'magazine',
-    'newspaper',
-    'relationship',
-    'teaching',
-    'cell',
-    'dealer',
-    'debate',
-    'finding',
-    'lake',
-    'member',
-    'message',
-    'phone',
-    'scene',
-    'appearance',
-    'association',
-    'concept',
-    'customer',
-    'death',
-    'discussion',
-    'housing',
-    'inflation',
-    'insurance',
-    'mood']
-
-compliments = [
-    'Good one!!',
-    'Good!',
-    'Well Done!',
-    'Nice!',
-    'Right!'
-]
-
 
 class stick_man:
     def __init__(self, screen, color):
@@ -230,7 +46,7 @@ class stick_man:
 
 
 def sleep(sec):
-    for _ in range(0, sec*1000):
+    for _ in range(0, sec*DELAY_COSTANT):
         for events in pygame.event.get():
             if events.type == pygame.QUIT:
                 sys.exit()
@@ -285,12 +101,12 @@ def main():
             p.draw_right_leg()
             pygame.display.flip()
             sleep(2)
-            show_message_box(screen, 'GAME OVER!!')
+            show_message_box(screen, 'GAME OVER!!', 3)
             errors = 0
 
         else:
             if processed_word.find('-') == -1:
-                show_message_box(screen, random.choice(compliments))
+                show_message_box(screen, random.choice(compliments), 3)
                 word = ''
                 errors = 0
 
@@ -309,6 +125,8 @@ def main():
             pygame.display.flip()
 
             letter = ask_letter(screen, 80, 350)
+            if letter == '':
+                show_message_box(screen, 'Please, insert only letters!', 2)
             line2 = 'You selected the letter: ' + letter
             print(word)
             word = list(word)
@@ -333,15 +151,14 @@ def display_message(screen, message, color, pos=(50, 30)):
     screen.blit(text, pos)
 
 
-def show_message_box(screen, message):
-    pygame.event.pump()
+def show_message_box(screen, message, showtime):
     screen.fill((0, 0, 0))
     text = myfont_big.render(message, False, (255, 255, 255))
     text_rect = text.get_rect(center=(WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
     screen.blit(text, text_rect)
     pygame.display.flip()
 
-    sleep(3)
+    sleep(showtime)
     screen.fill((0, 0, 0))
     pygame.display.flip()
 
