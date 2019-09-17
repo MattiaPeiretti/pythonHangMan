@@ -15,17 +15,21 @@ WINDOW_HEIGHT = 500
 BACKGROUND_COLOR = (0, 0, 0)
 FOREGROUND_COLOR = (255, 255, 255)
 
-DELAY_COSTANT = 500
+DELAY_COSTANT = 500 # custom costant
 
-pygame.font.init()
+pygame.font.init() #font init
+
+#defining the 3 main fonts, a small one, a medium, and a large...
 myfont = pygame.font.SysFont('Comic Sans MS', 24)
 myfont_big = pygame.font.SysFont('Comic Sans', 54)
 myfont_small = pygame.font.SysFont('sans serif', 20)
 
-class stick_man:
+
+
+class stick_man: #defining class for the stickman, with func(s) to draw all parts of the body..
     def __init__(self, screen, color):
-        self.screen = screen
-        self.color = color
+        self.screen = screen #selecting screen surface
+        self.color = color #selecting color of the stickman
 
     def draw_head(self):
         pygame.draw.circle(self.screen, self.color, (200, 60), 20, 1)
@@ -45,14 +49,17 @@ class stick_man:
     def draw_right_leg(self):
         pygame.draw.line(self.screen, self.color, (200, 160), (170, 200))
 
-def sleep(sec):
+def sleep(sec): #definig a sleep function
+    # i made a custom function 'cause, using the built in one, the program freezes...
+    # this way, instead, i loop thru the pygame events (process that takes around 0.0005 s), with a for loop
+    # So that i can send the program 'to sleep' haha, without any problem... ;)
     for _ in range(0, sec*DELAY_COSTANT):
         for events in pygame.event.get():
             if events.type == pygame.QUIT:
                 sys.exit()
         time.sleep(0.001)
 
-def draw_base(screen, FOREGROUND_COLOR):
+def draw_base(screen, FOREGROUND_COLOR): #draws the basic components, the ones that are always present, like the hang or the credits
     pygame.draw.line(screen, FOREGROUND_COLOR, (20, 20), (20, 300))
     pygame.draw.line(screen, FOREGROUND_COLOR, (20, 300), (80, 300))
     pygame.draw.line(screen, FOREGROUND_COLOR, (20, 20), (200, 20))
@@ -60,20 +67,20 @@ def draw_base(screen, FOREGROUND_COLOR):
     display_message(screen, 'Program made by Mattia Peiretti - www.mattiapeiretti.com', FOREGROUND_COLOR, (10, WINDOW_HEIGHT - 50), myfont_small)
     display_message(screen, '09-2019', FOREGROUND_COLOR, (10, WINDOW_HEIGHT - 30), myfont_small)
 
-def generate_screen(width, height, BACKGROUND_COLOR):
+def generate_screen(width, height, BACKGROUND_COLOR): #screen init
     screen = pygame.display.set_mode((width, height))
     screen.fill(BACKGROUND_COLOR)
     return screen
 
-def generate_word():
+def generate_word(): #picks a random word from a list of nouns
     word = random.choice(nouns)
     return word
 
-def generate_censured_word(word):
+def generate_censured_word(word): #generates a censured version of the random word, eg. pizza become p---a
     processed_word = word[0] + '-'*(len(word)-2) + word[len(word)-1] #putting - instead of the letters in the center
     return processed_word
 
-def display_message(screen, message, color, pos=(50, 30), font = myfont):
+def display_message(screen, message, color, pos=(50, 30), font = myfont): # printing text on the screen surface
     text = font.render(message, False, color)
     screen.blit(text, pos)
 
