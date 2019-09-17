@@ -6,14 +6,14 @@ import time
 from nouns import nouns, compliments
 
 # COSTANTS
-MIN_ASCII_VALUE = 97
-MAX_ASCII_VALUE = 122
+MIN_ASCII_VALUE = 97 #begin of the range
+MAX_ASCII_VALUE = 122 #end of ascii range of the letters
 
-WINDOW_WIDTH = 500
-WINDOW_HEIGHT = 500
+WINDOW_WIDTH = 500 #window width
+WINDOW_HEIGHT = 500 #window height
 
-BACKGROUND_COLOR = (0, 0, 0)
-FOREGROUND_COLOR = (255, 255, 255)
+BACKGROUND_COLOR = (0, 0, 0) #black background
+FOREGROUND_COLOR = (255, 255, 255) # white foreground
 
 DELAY_COSTANT = 500 # custom costant
 
@@ -23,7 +23,6 @@ pygame.font.init() #font init
 myfont = pygame.font.SysFont('Comic Sans MS', 24)
 myfont_big = pygame.font.SysFont('Comic Sans', 54)
 myfont_small = pygame.font.SysFont('sans serif', 20)
-
 
 
 class stick_man: #defining class for the stickman, with func(s) to draw all parts of the body..
@@ -113,9 +112,6 @@ def ask_letter(screen, cord_x=50, cord_y=50): #waiting for user to input a lette
                 letter = get_char_from_ascii(screen, events.key) #returns letter from ascii value
                 running = False #killing loop
     return letter
-
-
-
 
 
 def main():
